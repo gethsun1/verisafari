@@ -2,6 +2,11 @@ import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import cfg from "@/lib/contract-config.json";
+import { GlassPanel } from "@/components/atoms/GlassPanel";
+import { UploadDropzone } from "@/components/molecules/UploadDropzone";
+import { Button } from "@/components/atoms/Button";
+import { ResultRow } from "@/components/molecules/ResultRow";
+import toast from "react-hot-toast";
 
 type UploadResult = {
   ipfsHash: string;
@@ -9,11 +14,11 @@ type UploadResult = {
 };
 
 export default function UploadPage() {
-  const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
+  const [busy, setBusy] = useState(false);
 
   const { writeContractAsync } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
@@ -27,26 +32,14 @@ export default function UploadPage() {
     setTxHash(null);
   }, []);
 
-  const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (f) onDrop(f);
-  }, [onDrop]);
-
-  const onDropArea = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    const f = e.dataTransfer.files?.[0];
-    if (f) onDrop(f);
-  }, [onDrop]);
-
   const handleUpload = useCallback(async () => {
     try {
+      setBusy(true);
       setError(null);
       setResult(null);
       setTxHash(null);
       if (!file) {
-        setError("Please select a file first.");
+        toast.error("Please select a file first.");
         return;
       }
       const form = new FormData();
@@ -56,6 +49,7 @@ export default function UploadPage() {
       if (!res.ok) throw new Error(json?.error || "Upload failed");
       const { ipfsHash, fileHash } = json as UploadResult;
       setResult({ ipfsHash, fileHash });
+      toast.success("Uploaded to IPFS");
 
       if (!cfg.address || !Array.isArray(cfg.abi) || cfg.address === "0x0000000000000000000000000000000000000000") {
         setError("Contract not deployed yet. Please deploy and update config.");
@@ -68,70 +62,55 @@ export default function UploadPage() {
         args: [ipfsHash, fileHash]
       });
       setTxHash(hash);
+      toast.success("Transaction submitted");
     } catch (e: any) {
       setError(e?.message ?? "Something went wrong");
+      toast.error(e?.message ?? "Something went wrong");
+    } finally {
+      setBusy(false);
     }
   }, [file, writeContractAsync]);
 
   return (
     <main className="container py-10">
       <h1 className="text-2xl font-bold">Upload Document</h1>
-      <div
-        onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
-        onDragOver={(e) => e.preventDefault()}
-        onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-        onDrop={onDropArea}
-        className="mt-6"
-      >
-        <motion.div
-          className="flex h-44 items-center justify-center rounded-lg border-2 border-dashed"
-          animate={{ borderColor: dragActive ? "#06b6d4" : "#9ca3af", scale: dragActive ? 1.02 : 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-300">Drag & drop a file here</p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">or</p>
-            <label className="mt-2 inline-block cursor-pointer rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black">
-              <input type="file" className="hidden" onChange={onInputChange} />
-              Choose file
-            </label>
+      <GlassPanel className="mt-6 p-6">
+        <div className="space-y-4">
+          <UploadDropzone onFileSelected={onDrop} busy={busy || isConfirming} />
+          {file && (
+            <div className="text-sm text-white/80">
+              Selected: <span className="font-mono">{file.name}</span>
+            </div>
+          )}
+          {busy && (
+            <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+              <motion.div
+                className="h-full w-1/3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                animate={{ x: ["0%", "200%"] }}
+                transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
+              />
+            </div>
+          )}
+          <div>
+            <Button onClick={handleUpload} disabled={!file || isConfirming || busy}>
+              {isConfirming ? "Confirming..." : "Upload & Store"}
+            </Button>
           </div>
-        </motion.div>
-      </div>
-
-      {file && (
-        <div className="mt-6 rounded-md border p-4">
-          <p className="text-sm">Selected: <span className="font-mono">{file.name}</span></p>
+          {result && (
+            <div className="space-y-2">
+              <ResultRow label="IPFS CID" value={result.ipfsHash} link={`https://ipfs.io/ipfs/${result.ipfsHash}`} />
+              <ResultRow label="SHA-256" value={result.fileHash} />
+            </div>
+          )}
+          {txHash && (
+            <div className="text-sm">
+              <ResultRow label="Transaction" value={txHash} link={`https://sepolia.etherscan.io/tx/${txHash}`} />
+              {isConfirmed && <div className="mt-1 text-green-400">Confirmed</div>}
+            </div>
+          )}
+          {error && <p className="text-sm text-red-400">{error}</p>}
         </div>
-      )}
-
-      <div className="mt-6">
-        <button
-          onClick={handleUpload}
-          className="rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black disabled:opacity-50"
-          disabled={!file || isConfirming}
-        >
-          {isConfirming ? "Confirming..." : "Upload & Store"}
-        </button>
-      </div>
-
-      {result && (
-        <div className="mt-6 space-y-2 rounded-md border p-4">
-          <p className="text-sm">
-            IPFS CID: <a className="underline" href={`https://ipfs.io/ipfs/${result.ipfsHash}`} target="_blank" rel="noreferrer">{result.ipfsHash}</a>
-          </p>
-          <p className="text-sm break-all">SHA-256: <span className="font-mono">{result.fileHash}</span></p>
-        </div>
-      )}
-
-      {txHash && (
-        <div className="mt-4 text-sm">
-          Tx: <a className="underline" href={`https://sepolia.etherscan.io/tx/${txHash}`} target="_blank" rel="noreferrer">{txHash}</a>
-          {isConfirmed && <span className="ml-2 text-green-600">Confirmed</span>}
-        </div>
-      )}
-
-      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+      </GlassPanel>
     </main>
   );
 }

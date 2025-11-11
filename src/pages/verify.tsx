@@ -1,5 +1,9 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { GlassPanel } from "@/components/atoms/GlassPanel";
+import { VerifyInput } from "@/components/molecules/VerifyInput";
+import { Button } from "@/components/atoms/Button";
+import toast from "react-hot-toast";
 
 type VerifyResult = {
   valid: boolean;
@@ -41,7 +45,7 @@ export default function VerifyPage() {
       setError(null);
       setResult(null);
       if (!file && !fileHash) {
-        setError("Provide a file or a hash.");
+        toast.error("Provide a file or a hash.");
         return;
       }
       let res: Response;
@@ -59,6 +63,8 @@ export default function VerifyPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Verify failed");
       setResult(json as VerifyResult);
+      if ((json as VerifyResult).valid) toast.success("Document verified");
+      else toast("No matching record found");
     } catch (e: any) {
       setError(e?.message ?? "Something went wrong");
     } finally {
@@ -69,72 +75,66 @@ export default function VerifyPage() {
   return (
     <main className="container py-10">
       <h1 className="text-2xl font-bold">Verify Document</h1>
-      <div
-        onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
-        onDragOver={(e) => e.preventDefault()}
-        onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
-        onDrop={onDropArea}
-        className="mt-6"
-      >
-        <motion.div
-          className="flex h-44 items-center justify-center rounded-lg border-2 border-dashed"
-          animate={{ borderColor: dragActive ? "#06b6d4" : "#9ca3af", scale: dragActive ? 1.02 : 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      <GlassPanel className="mt-6 p-6">
+        <div
+          onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
+          onDragOver={(e) => e.preventDefault()}
+          onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
+          onDrop={onDropArea}
+          className="space-y-4"
         >
-          <div className="text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-300">Drag & drop a file here</p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">or</p>
-            <label className="mt-2 inline-block cursor-pointer rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black">
-              <input type="file" className="hidden" onChange={onInputChange} />
-              Choose file
-            </label>
-          </div>
-        </motion.div>
-      </div>
+          <motion.div
+            className="flex h-40 items-center justify-center rounded-2xl border-2 border-dashed border-white/30 bg-white/5 text-white backdrop-blur-md"
+            animate={{ borderColor: dragActive ? "#06b6d4" : "rgba(255,255,255,0.3)", scale: dragActive ? 1.01 : 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <div className="text-center">
+              <p className="text-sm text-white/80">Drag & drop a file here</p>
+              <p className="mt-1 text-xs text-white/60">or choose below</p>
+              <label className="mt-3 inline-block cursor-pointer rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-white hover:bg-white/20">
+                <input type="file" className="hidden" onChange={onInputChange} />
+                Choose file
+              </label>
+            </div>
+          </motion.div>
 
-      <div className="mt-6">
-        <label className="block text-sm">Or paste SHA-256 hash</label>
-        <input
-          value={fileHash}
-          onChange={(e) => setFileHash(e.target.value.trim().toLowerCase())}
-          placeholder="e.g. a3f1..."
-          className="mt-1 w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-900"
-        />
-      </div>
+          <VerifyInput value={fileHash} onChange={(v) => setFileHash(v.trim().toLowerCase())} />
 
-      <div className="mt-6">
-        <button
-          onClick={handleVerify}
-          className="rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? "Verifying..." : "Verify"}
-        </button>
-      </div>
+          <Button onClick={handleVerify} disabled={loading}>
+            {loading ? "Verifying..." : "Verify"}
+          </Button>
 
-      {file && (
-        <div className="mt-4 text-sm">
-          Local SHA-256: <span className="font-mono break-all">{fileHash}</span>
-        </div>
-      )}
-
-      {result && (
-        <div className="mt-6 space-y-2 rounded-md border p-4">
-          <p className="text-sm">Valid: <span className={result.valid ? "text-green-600" : "text-red-600"}>{String(result.valid)}</span></p>
-          {result.valid && (
-            <>
-              <p className="text-sm">
-                IPFS CID: <a className="underline" href={`https://ipfs.io/ipfs/${result.ipfsHash}`} target="_blank" rel="noreferrer">{result.ipfsHash}</a>
-              </p>
-              <p className="text-sm">
-                Timestamp: {new Date(result.timestamp * 1000).toLocaleString()}
-              </p>
-            </>
+          {file && (
+            <div className="text-sm text-white/80">
+              Local SHA-256: <span className="font-mono break-all">{fileHash}</span>
+            </div>
           )}
-        </div>
-      )}
 
-      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+          {result && (
+            <GlassPanel className="p-4">
+              <p className="text-sm">
+                Status:{" "}
+                <span className={result.valid ? "text-green-400" : "text-red-400"}>
+                  {result.valid ? "Verified" : "Not Found"}
+                </span>
+              </p>
+              {result.valid && (
+                <div className="mt-2 space-y-1 text-sm">
+                  <p>
+                    IPFS CID:{" "}
+                    <a className="underline" href={`https://ipfs.io/ipfs/${result.ipfsHash}`} target="_blank" rel="noreferrer">
+                      {result.ipfsHash}
+                    </a>
+                  </p>
+                  <p>Timestamp: {new Date(result.timestamp * 1000).toLocaleString()}</p>
+                </div>
+              )}
+            </GlassPanel>
+          )}
+
+          {error && <p className="text-sm text-red-400">{error}</p>}
+        </div>
+      </GlassPanel>
     </main>
   );
 }
