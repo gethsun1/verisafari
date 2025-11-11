@@ -1,0 +1,42 @@
+{
+  "name": "verisafari",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "compile": "hardhat compile",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.1.0",
+    "@tanstack/react-query": "^5.51.1",
+    "autoprefixer": "^10.4.20",
+    "ethers": "^6.13.1",
+    "framer-motion": "^10.18.0",
+    "formidable": "^3.5.4",
+    "form-data": "^4.0.0",
+    "next": "14.2.5",
+    "postcss": "^8.4.38",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "^3.4.10",
+    "viem": "^2.9.5",
+    "wagmi": "^2.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/formidable": "^3.4.5",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "typescript": "^5.4.5",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.11",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0"
+  }
+}
+
