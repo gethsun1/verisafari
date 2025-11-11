@@ -1,5 +1,7 @@
 import { useAccount } from "wagmi";
 import { useEffect, useState } from "react";
+import { HistoryGrid, type HistoryItem } from "@/components/organisms/HistoryGrid";
+import { GlassPanel } from "@/components/atoms/GlassPanel";
 
 type Item = {
   ipfsHash: string;
@@ -35,27 +37,16 @@ export default function HistoryPage() {
   return (
     <main className="container py-10">
       <h1 className="text-2xl font-bold">My Upload History</h1>
-      {!isConnected && <p className="mt-4 text-sm">Connect your wallet to view history.</p>}
+      {!isConnected && <p className="mt-4 text-sm text-white/80">Connect your wallet to view history.</p>}
       {isConnected && (
-        <>
-          {loading && <p className="mt-4 text-sm">Loading...</p>}
-          {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-          <div className="mt-6 divide-y rounded-md border">
-            {items.length === 0 && !loading && <p className="p-4 text-sm">No items</p>}
-            {items.map((it, idx) => (
-              <div key={idx} className="p-4 text-sm">
-                <p className="break-all">SHA-256: <span className="font-mono">{it.fileHash}</span></p>
-                <p>
-                  IPFS:{" "}
-                  <a className="underline" href={`https://ipfs.io/ipfs/${it.ipfsHash}`} target="_blank" rel="noreferrer">
-                    {it.ipfsHash}
-                  </a>
-                </p>
-                <p>Timestamp: {new Date(it.timestamp * 1000).toLocaleString()}</p>
-              </div>
-            ))}
-          </div>
-        </>
+        <div className="mt-6 space-y-4">
+          {loading && (
+            <GlassPanel className="p-4 text-sm text-white/80">Loading...</GlassPanel>
+          )}
+          {error && <p className="text-sm text-red-400">{error}</p>}
+          {items.length === 0 && !loading && <GlassPanel className="p-4 text-sm text-white/80">No items</GlassPanel>}
+          {items.length > 0 && <HistoryGrid items={items as HistoryItem[]} />}
+        </div>
       )}
     </main>
   );
