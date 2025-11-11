@@ -207,11 +207,11 @@ Fork, create a feature branch, and open a PR with a clear description.
 ## 🛡️ License
 MIT License © 2025 Gethsun Misesi (Quantum Quasar)
 
-## 🔗 Live Demo
-- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-nyq60xh4u-gethsun1s-projects.vercel.app)  
-  (You can alias to `verisafari.vercel.app` in Vercel if desired.)
-
 Notes:
 - Hash format is SHA‑256 (lowercase hex).
 - IPFS upload is server-side; secrets are never exposed to the client.
 - Network: Sepolia (`chainId` 11155111).
+
+  ## 🔗 Live Demo
+- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-nyq60xh4u-gethsun1s-projects.vercel.app)  
+ Powered by Ethereum · Secured by IPFS · Designed with Trust
