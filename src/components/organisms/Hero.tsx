@@ -10,7 +10,7 @@ export function Hero() {
           Verify Trust. Preserve Truth.
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-white/80">
-          Upload documents, store immutable proofs on IPFS, and anchor authenticity on-chain — all in one click.
+          Upload documents, store immutable proofs on IPFS, and anchor authenticity on-chain, all in one click.
         </p>
         <div className="mt-8">
           <a href="/upload">
