@@ -204,14 +204,16 @@ verisafari/
 Pull requests and feature ideas are welcome!  
 Fork, create a feature branch, and open a PR with a clear description.
 
-## 🛡️ License
-MIT License © 2025 Gethsun Misesi (Quantum Quasar)
-
 Notes:
 - Hash format is SHA‑256 (lowercase hex).
 - IPFS upload is server-side; secrets are never exposed to the client.
 - Network: Sepolia (`chainId` 11155111).
 
   ## 🔗 Live Demo
-- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-nyq60xh4u-gethsun1s-projects.vercel.app)  
- Powered by Ethereum · Secured by IPFS · Designed with Trust
+- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-nyq60xh4u-gethsun1s-projects.vercel.app)
+  
+    _Powered by Ethereum · Secured by IPFS · Designed with Trust._
+
+
+## 🛡️ License
+MIT License © 2025 Gethsun Misesi (Quantum Quasar)
