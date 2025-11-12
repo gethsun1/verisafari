@@ -6,6 +6,7 @@ import { GlassPanel } from "@/components/atoms/GlassPanel";
 type Item = {
   ipfsHash: string;
   fileHash: string;
+  aquaCid?: string;
   timestamp: number;
 };
 
@@ -45,7 +46,7 @@ export default function HistoryPage() {
           )}
           {error && <p className="text-sm text-red-400">{error}</p>}
           {items.length === 0 && !loading && <GlassPanel className="p-4 text-sm text-white/80">No items</GlassPanel>}
-          {items.length > 0 && <HistoryGrid items={items as HistoryItem[]} />}
+          {items.length > 0 && <HistoryGrid items={items as unknown as HistoryItem[]} />}
         </div>
       )}
     </main>

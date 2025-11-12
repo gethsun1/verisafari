@@ -25,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const items = docs.map((d) => ({
       ipfsHash: d.ipfsHash as string,
       fileHash: d.fileHash as string,
+      aquaCid: (d.aquaCid ?? "") as string,
       timestamp: Number(d.timestamp)
     }));
     return res.status(200).json({ items });

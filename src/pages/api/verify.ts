@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import { ethers } from "ethers";
 import cfg from "@/lib/contract-config.json";
+import { verifyAquaFromIpfsCid } from "@/lib/aqua";
 
 export const config = {
   api: {
@@ -43,14 +44,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     const contract = new ethers.Contract(cfg.address as string, cfg.abi as any, provider);
     const result = await contract.verifyDocument(fileHash);
-    // result: [bool, string, bigint]
+    // v1: [bool, string, bigint]
+    // v2: [bool, string, string, bigint]
     const valid: boolean = result[0];
     const ipfsHash: string = result[1];
-    const timestamp: bigint = result[2];
+    let aquaCid: string | undefined;
+    let timestampBn: bigint;
+    if (result.length >= 4) {
+      aquaCid = result[2];
+      timestampBn = result[3];
+    } else {
+      timestampBn = result[2];
+    }
+    let aqua = null;
+    if (aquaCid && typeof aquaCid === "string" && aquaCid.length > 0) {
+      try {
+        const aquaVerification = await verifyAquaFromIpfsCid(aquaCid);
+        aqua = {
+          isOk: aquaVerification.isOk,
+          hasGraph: Boolean(aquaVerification.graph)
+        };
+      } catch (_e) {
+        aqua = { isOk: false, hasGraph: false };
+      }
+    }
     return res.status(200).json({
       valid,
       ipfsHash: valid ? ipfsHash : "",
-      timestamp: valid ? Number(timestamp) : 0
+      aquaCid: aquaCid || "",
+      aqua,
+      timestamp: valid ? Number(timestampBn) : 0
     });
   } catch (err: any) {
     return res.status(400).json({ error: err?.message ?? "Verify failed" });

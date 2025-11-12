@@ -2,6 +2,9 @@
   "name": "verisafari",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "20.9.x"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
@@ -11,6 +14,7 @@
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
   },
   "dependencies": {
+    "aqua-js-sdk": "^3.2.1-24",
     "@rainbow-me/rainbowkit": "^2.1.0",
     "@tanstack/react-query": "^5.51.1",
     "autoprefixer": "^10.4.20",

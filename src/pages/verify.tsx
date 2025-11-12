@@ -9,6 +9,8 @@ type VerifyResult = {
   valid: boolean;
   ipfsHash: string;
   timestamp: number;
+  aquaCid?: string;
+  aqua?: { isOk: boolean; hasGraph: boolean };
 };
 
 export default function VerifyPage() {
@@ -126,6 +128,19 @@ export default function VerifyPage() {
                       {result.ipfsHash}
                     </a>
                   </p>
+                  {!!result.aquaCid && (
+                    <p>
+                      Aqua CID:{" "}
+                      <a className="underline" href={`https://ipfs.io/ipfs/${result.aquaCid}`} target="_blank" rel="noreferrer">
+                        {result.aquaCid}
+                      </a>{" "}
+                      {result.aqua ? (
+                        <span className={result.aqua.isOk ? "text-green-400" : "text-yellow-400"}>
+                          {result.aqua.isOk ? "(Aqua verified)" : "(Aqua not verified)"}
+                        </span>
+                      ) : null}
+                    </p>
+                  )}
                   <p>Timestamp: {new Date(result.timestamp * 1000).toLocaleString()}</p>
                 </div>
               )}

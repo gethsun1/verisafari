@@ -1,5 +1,5 @@
 {
-  "address": "0x8F2F2ce998b0c74B458bE4a682E45AF915C94A22",
+  "address": "0x555bE37aEdF200dC714F6Fb74a235140B3EccB4c",
   "chainId": 11155111,
   "abi": [
     {
@@ -21,6 +21,12 @@
           "indexed": false,
           "internalType": "string",
           "name": "fileHash",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "aquaCid",
           "type": "string"
         },
         {
@@ -75,12 +81,17 @@
               "type": "string"
             },
             {
+              "internalType": "string",
+              "name": "aquaCid",
+              "type": "string"
+            },
+            {
               "internalType": "uint256",
               "name": "timestamp",
               "type": "uint256"
             }
           ],
-          "internalType": "struct DocumentRegistry.Document[]",
+          "internalType": "struct DocumentRegistryV2.Document[]",
           "name": "",
           "type": "tuple[]"
         }
@@ -98,6 +109,11 @@
         {
           "internalType": "string",
           "name": "_fileHash",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_aquaCid",
           "type": "string"
         }
       ],
@@ -132,6 +148,11 @@
           "type": "string"
         },
         {
+          "internalType": "string",
+          "name": "aquaCid",
+          "type": "string"
+        },
+        {
           "internalType": "uint256",
           "name": "timestamp",
           "type": "uint256"
@@ -154,6 +175,11 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
         },
         {
           "internalType": "string",

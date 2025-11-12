@@ -37,12 +37,13 @@ Users can:
 ```
 User → Next.js Frontend → API Routes → IPFS (Infura)
                           ↳ Hardhat Contract → Ethereum Sepolia
+                          ↳ Aqua SDK → aqua.json → IPFS
 ```
 
 Smart Contract (key functions):
-- `storeDocument(ipfsHash, fileHash)` — Anchors document proof on-chain
-- `verifyDocument(fileHash)` — Checks authenticity of a given document hash
-- `getDocumentHistory(address)` — Returns uploaded document proofs by wallet
+- `storeDocument(ipfsHash, fileHash, aquaCid)` — Anchors document proof on-chain with Aqua proof CID
+- `verifyDocument(fileHash)` — Returns `(valid, ipfsHash, aquaCid, timestamp)`
+- `getDocumentHistory(address)` — Returns uploaded document proofs by wallet (includes `aquaCid`)
 
 ### 🧰 Prerequisites
 - Node.js 18+ and npm
@@ -50,6 +51,7 @@ Smart Contract (key functions):
 - Infura IPFS Project ID & Secret
 - WalletConnect Cloud Project ID (RainbowKit)
 - Sepolia RPC URL (Alchemy/Infura)
+ - Aqua: Alchemy API key for witness verification
 
 ## ⚙️ Setup & Installation
 
@@ -70,6 +72,15 @@ INFURA_IPFS_PROJECT_SECRET=...
 
 NEXT_PUBLIC_WC_PROJECT_ID=...
 NEXT_PUBLIC_ALCHEMY_API_KEY=... # optional
+
+# Aqua SDK (server-only)
+ALCHEMY_API_KEY=...              # used by Aqua Ethereum witness verification
+AQUA_WITNESS_NETWORK=sepolia      # sepolia | mainnet | holesky
+AQUA_WITNESS_METHOD=cli           # cli | metamask | inline
+# Optional: enable additional witnesses/signing
+AQUA_MNEMONIC=...
+AQUA_DID_KEY=...
+AQUA_NOSTR_SK=...
 ```
 
 ### 3) Compile and deploy the contract (Sepolia)
@@ -84,6 +95,11 @@ This writes `src/lib/contract-config.json` with `{ address, chainId, abi }`.
 npm run dev
 ```
 Visit `http://localhost:3000`.
+
+### Aqua Flow
+- During upload, the server creates an Aqua genesis proof (`aqua.json`) using Aqua SDK, uploads it to IPFS, and returns `aquaCid`.
+- The dApp stores `ipfsHash`, `fileHash`, and `aquaCid` on-chain via `storeDocument`.
+- During verification, the server validates on-chain data and verifies `aqua.json` using Aqua SDK (including Ethereum witness via Alchemy when present).
 
 ## 🖼️ Screenshots
 
@@ -117,8 +133,8 @@ Upload
 ## 🔌 API Endpoints
 | Method | Route | Description |
 | --- | --- | --- |
-| POST | `/api/upload` | Uploads file → `{ ipfsHash, fileHash }` |
-| POST | `/api/verify` | Verifies by hash or file → `{ valid, ipfsHash, timestamp }` |
+| POST | `/api/upload` | Uploads file → `{ ipfsHash, fileHash, aquaCid }` |
+| POST | `/api/verify` | Verifies by hash or file → `{ valid, ipfsHash, aquaCid, aqua, timestamp }` |
 | GET | `/api/history?address=0x...` | Fetches document history by wallet address |
 
 ## 🖥️ Deploying to Vercel

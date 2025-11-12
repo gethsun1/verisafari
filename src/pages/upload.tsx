@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 type UploadResult = {
   ipfsHash: string;
   fileHash: string;
+  aquaCid: string;
 };
 
 export default function UploadPage() {
@@ -47,19 +48,22 @@ export default function UploadPage() {
       const res = await fetch("/api/upload", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error || "Upload failed");
-      const { ipfsHash, fileHash } = json as UploadResult;
-      setResult({ ipfsHash, fileHash });
+      const { ipfsHash, fileHash, aquaCid } = json as UploadResult;
+      setResult({ ipfsHash, fileHash, aquaCid });
       toast.success("Uploaded to IPFS");
 
       if (!cfg.address || !Array.isArray(cfg.abi) || cfg.address === "0x0000000000000000000000000000000000000000") {
         setError("Contract not deployed yet. Please deploy and update config.");
         return;
       }
+      const fn = Array.isArray((cfg as any).abi) ? (cfg as any).abi.find((f: any) => f?.name === "storeDocument") : null;
+      const numInputs = fn?.inputs?.length ?? 3;
+      const args = numInputs >= 3 ? [ipfsHash, fileHash, aquaCid] : [ipfsHash, fileHash];
       const hash = await writeContractAsync({
         address: cfg.address as `0x${string}`,
         abi: cfg.abi as any,
         functionName: "storeDocument",
-        args: [ipfsHash, fileHash]
+        args
       });
       setTxHash(hash);
       toast.success("Transaction submitted");
@@ -99,6 +103,7 @@ export default function UploadPage() {
           {result && (
             <div className="space-y-2">
               <ResultRow label="IPFS CID" value={result.ipfsHash} link={`https://ipfs.io/ipfs/${result.ipfsHash}`} />
+              <ResultRow label="Aqua CID" value={result.aquaCid} link={`https://ipfs.io/ipfs/${result.aquaCid}`} />
               <ResultRow label="SHA-256" value={result.fileHash} />
             </div>
           )}

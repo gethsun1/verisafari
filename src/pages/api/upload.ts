@@ -3,6 +3,7 @@ import formidable from "formidable";
 import fs from "fs/promises";
 import crypto from "crypto";
 import { uploadToIPFS } from "@/lib/ipfs";
+import { createAquaGenesisAndUpload } from "@/lib/aqua";
 
 export const config = {
   api: {
@@ -19,7 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { buffer, filename } = await parseFile(req);
     const fileHash = crypto.createHash("sha256").update(buffer).digest("hex");
     const ipfsHash = await uploadToIPFS(buffer, filename ?? "file");
-    return res.status(200).json({ ipfsHash, fileHash });
+    const { aquaCid } = await createAquaGenesisAndUpload(buffer, filename ?? "file");
+    return res.status(200).json({ ipfsHash, fileHash, aquaCid });
   } catch (err: any) {
     return res.status(400).json({ error: err?.message ?? "Upload failed" });
   }
