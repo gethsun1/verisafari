@@ -1,4 +1,4 @@
-## 🦒 VeriSafari
+## 🦓 VeriSafari
 
 ![Build](https://img.shields.io/badge/Vercel-Preview-success?logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
