@@ -14,7 +14,7 @@ export async function uploadToIPFS(buffer: Buffer, filename = "file"): Promise<s
 
   // Use native Web FormData/Blob for best compatibility with undici fetch (Vercel/Node 18+)
   const form = new FormData();
-  const blob = new Blob([buffer], { type: "application/octet-stream" });
+  const blob = new Blob([new Uint8Array(buffer)], { type: "application/octet-stream" });
   form.append("file", blob, filename);
   form.append("pinataMetadata", JSON.stringify({ name: filename }));
 
