@@ -19,7 +19,7 @@ Users can:
 | --- | --- | --- |
 | Frontend | Next.js (Pages), Tailwind CSS, Framer Motion | Reactive, modular UI/UX (Atomic Design) |
 | Smart Contracts | Solidity + Hardhat | On-chain proof storage and verification |
-| Storage | IPFS via Infura | Distributed file storage |
+| Storage | IPFS via Pinata | Distributed file storage |
 | Network | Ethereum Sepolia Testnet | Proof anchoring |
 | Wallet | Wagmi + RainbowKit (WalletConnect) | Web3 wallet connect flow |
 | Deployment | Vercel | Frontend hosting & CI/CD |
@@ -35,7 +35,7 @@ Users can:
 
 ### 🧩 Architecture
 ```
-User → Next.js Frontend → API Routes → IPFS (Infura)
+User → Next.js Frontend → API Routes → IPFS (Pinata)
                           ↳ Hardhat Contract → Ethereum Sepolia
                           ↳ Aqua SDK → aqua.json → IPFS
 ```
@@ -48,7 +48,7 @@ Smart Contract (key functions):
 ### 🧰 Prerequisites
 - Node.js 18+ and npm
 - A funded wallet on Sepolia testnet
-- Infura IPFS Project ID & Secret
+- Pinata account (JWT recommended, or API key/secret)
 - WalletConnect Cloud Project ID (RainbowKit)
 - Sepolia RPC URL (Alchemy/Infura)
  - Aqua: Alchemy API key for witness verification
@@ -67,8 +67,10 @@ Create `.env` (server-only) and optionally `.env.local`:
 ```env
 SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/...
 PRIVATE_KEY=0x...
-INFURA_IPFS_PROJECT_ID=...
-INFURA_IPFS_PROJECT_SECRET=...
+PINATA_JWT=...                           # preferred
+# Alternatively:
+# PINATA_API_KEY=...
+# PINATA_API_SECRET=...
 
 NEXT_PUBLIC_WC_PROJECT_ID=...
 NEXT_PUBLIC_ALCHEMY_API_KEY=... # optional
@@ -147,8 +149,7 @@ npm run build
 - `NEXT_PUBLIC_WC_PROJECT_ID`
 - `NEXT_PUBLIC_ALCHEMY_API_KEY`
 - `SEPOLIA_RPC_URL`
-- `INFURA_IPFS_PROJECT_ID`
-- `INFURA_IPFS_PROJECT_SECRET`
+- `PINATA_JWT`
 3) Deploy:
 ```bash
 vercel --prod --yes
@@ -157,8 +158,8 @@ vercel --prod --yes
 ## 🧯 Troubleshooting
 
 - App builds but upload fails
-  - Ensure server env vars are set on Vercel: `SEPOLIA_RPC_URL`, `INFURA_IPFS_PROJECT_ID`, `INFURA_IPFS_PROJECT_SECRET`.
-  - Check IPFS credentials (Infura project ID/secret) and that they’re not exposed with `NEXT_PUBLIC_`.
+  - Ensure server env vars are set on Vercel: `SEPOLIA_RPC_URL`, `PINATA_JWT` (or `PINATA_API_KEY`/`PINATA_API_SECRET`).
+  - Check IPFS credentials (Pinata JWT or key/secret) and that they’re not exposed with `NEXT_PUBLIC_`.
 
 - “Contract config missing. Deploy first.”
   - Run the deploy script and confirm `src/lib/contract-config.json` exists and contains the deployed address/ABI for Sepolia.
