@@ -227,7 +227,7 @@ Notes:
 - Network: Sepolia (`chainId` 11155111).
 
   ## 🔗 Live Demo
-- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-q0gpayz8r-gethsun1s-projects.vercel.app/upload)
+- Production: [`Vercel Dapp`](https://verisafari.vercel.app/)
   
     _Powered by Ethereum · Secured by IPFS · Designed with Trust._
 
