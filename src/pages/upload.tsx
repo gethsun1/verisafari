@@ -101,16 +101,24 @@ export default function UploadPage() {
             </Button>
           </div>
           {result && (
-            <div className="space-y-2">
-              <ResultRow label="IPFS CID" value={result.ipfsHash} link={`https://ipfs.io/ipfs/${result.ipfsHash}`} />
-              <ResultRow label="Aqua CID" value={result.aquaCid} link={`https://ipfs.io/ipfs/${result.aquaCid}`} />
-              <ResultRow label="SHA-256" value={result.fileHash} />
+            <div className="mt-2 grid gap-3 md:grid-cols-2">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                <ResultRow label="IPFS CID" value={result.ipfsHash} link={`https://ipfs.io/ipfs/${result.ipfsHash}`} />
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                <ResultRow label="Aqua CID" value={result.aquaCid} link={`https://ipfs.io/ipfs/${result.aquaCid}`} />
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 md:col-span-2">
+                <ResultRow label="SHA-256" value={result.fileHash} />
+              </div>
             </div>
           )}
           {txHash && (
-            <div className="text-sm">
-              <ResultRow label="Transaction" value={txHash} link={`https://sepolia.etherscan.io/tx/${txHash}`} />
-              {isConfirmed && <div className="mt-1 text-green-400">Confirmed</div>}
+            <div className="mt-2">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                <ResultRow label="Transaction" value={txHash} link={`https://sepolia.etherscan.io/tx/${txHash}`} />
+                {isConfirmed && <div className="mt-1 text-emerald-400">Confirmed</div>}
+              </div>
             </div>
           )}
           {error && <p className="text-sm text-red-400">{error}</p>}

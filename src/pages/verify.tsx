@@ -113,13 +113,20 @@ export default function VerifyPage() {
           )}
 
           {result && (
-            <GlassPanel className="p-4">
-              <p className="text-sm">
-                Status:{" "}
-                <span className={result.valid ? "text-green-400" : "text-red-400"}>
-                  {result.valid ? "Verified" : "Not Found"}
-                </span>
-              </p>
+            <GlassPanel className="p-4" role="status" aria-live="polite">
+              <div className="mb-2">
+                {result.valid ? (
+                  <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-emerald-300 bg-emerald-500/10 ring-1 ring-emerald-400/20">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-red-300 bg-red-500/10 ring-1 ring-red-400/20">
+                    <span className="h-2 w-2 rounded-full bg-red-400" />
+                    Not Found
+                  </span>
+                )}
+              </div>
               {result.valid && (
                 <div className="mt-2 space-y-1 text-sm">
                   <p>
