@@ -1,15 +1,27 @@
+import { motion } from "framer-motion";
+
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-white/10 py-8">
-      <div className="container flex flex-col items-center justify-between gap-3 text-xs text-white/70 md:flex-row">
-        <p>© {new Date().getFullYear()} VeriSafari. All rights reserved.</p>
-        <div className="flex items-center gap-4">
-          <a className="underline" href="https://github.com/gethsun1/verisafari" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-        </div>
+    <motion.footer
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="mt-20 border-t border-white/10 bg-transparent pt-6 pb-8 text-center"
+    >
+      <div className="container flex flex-col items-center justify-center gap-3 text-sm text-white/70">
+        <p>
+          © {new Date().getFullYear()} VeriSafari. Built with 💎 on Ethereum & IPFS.
+        </p>
+        <a
+          className="text-cyan-400 underline decoration-dotted hover:text-cyan-300"
+          href="https://github.com/gethsun1/verisafari"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View on GitHub
+        </a>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
 

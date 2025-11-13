@@ -16,4 +16,24 @@ body {
   @apply mx-auto max-w-5xl px-4;
 }
 
+@keyframes text-gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.animate-text {
+  background-size: 200% 200%;
+  animation: text-gradient-move 10s ease infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-text {
+    animation: none;
+  }
+}
 

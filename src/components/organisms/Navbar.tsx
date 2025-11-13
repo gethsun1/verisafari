@@ -12,9 +12,27 @@ export function Navbar() {
         </Link>
         <div className="flex items-center gap-3">
           <NavLinks />
-          <div className="hidden md:block">
-            <ConnectButton />
-          </div>
+          <ConnectButton.Custom>
+            {({ account, openAccountModal, openConnectModal, mounted }) => {
+              const connected = mounted && account;
+              return (
+                <button
+                  type="button"
+                  onClick={connected ? openAccountModal : openConnectModal}
+                  aria-label={connected ? "Open account" : "Connect wallet"}
+                  className="group relative inline-flex items-center rounded-full p-[1px] bg-gradient-to-r from-indigo-500 via-cyan-400 to-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                >
+                  <span className="inline-flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 text-sm text-white/90 backdrop-blur">
+                    <span
+                      className={`h-2 w-2 rounded-full ${connected ? "bg-emerald-400/80" : "bg-gray-400/80"}`}
+                      aria-hidden="true"
+                    />
+                    {connected ? account?.displayName : "Connect Wallet"}
+                  </span>
+                </button>
+              );
+            }}
+          </ConnectButton.Custom>
           <ToggleTheme />
         </div>
       </div>

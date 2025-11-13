@@ -1,31 +1,50 @@
 import FormData from "form-data";
+
+/**
+ * Uploads a file buffer to IPFS via Pinata.
+ * Priority auth is PINATA_JWT (recommended). Falls back to PINATA_API_KEY + PINATA_API_SECRET if JWT is not set.
+ * Returns the CID string.
+ */
 export async function uploadToIPFS(buffer: Buffer, filename = "file"): Promise<string> {
-  const projectId = process.env.INFURA_IPFS_PROJECT_ID;
-  const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-  if (!projectId || !projectSecret) {
-    throw new Error("Missing INFURA_IPFS_PROJECT_ID/INFURA_IPFS_PROJECT_SECRET");
+  const jwt = process.env.PINATA_JWT;
+  const apiKey = process.env.PINATA_API_KEY;
+  const apiSecret = process.env.PINATA_API_SECRET;
+
+  if (!jwt && !(apiKey && apiSecret)) {
+    throw new Error("Missing PINATA_JWT or PINATA_API_KEY/PINATA_API_SECRET");
   }
-  const auth = Buffer.from(`${projectId}:${projectSecret}`).toString("base64");
 
   const form = new FormData();
   form.append("file", buffer, { filename });
 
-  const res = await fetch("https://ipfs.infura.io:5001/api/v0/add?pin=true", {
+  // Optional: basic metadata to help locate files in Pinata UI
+  const metadata = JSON.stringify({ name: filename });
+  form.append("pinataMetadata", metadata, { contentType: "application/json" });
+
+  const headers: Record<string, string> = { ...(form as any).getHeaders?.() };
+  if (jwt) {
+    headers.Authorization = `Bearer ${jwt}`;
+  } else if (apiKey && apiSecret) {
+    headers.pinata_api_key = apiKey;
+    headers.pinata_secret_api_key = apiSecret;
+  }
+
+  const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
     method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      ...form.getHeaders()
-    },
+    headers,
     body: form as any
   });
+
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`IPFS upload failed: ${res.status} ${text}`);
+    throw new Error(`Pinata upload failed: ${res.status} ${text}`);
   }
-  const json = await res.json();
-  const cid = json.Hash || json.IpfsHash || json.cid || json.Cid;
-  if (!cid) {
-    throw new Error("IPFS response missing CID");
+
+  // Pinata response: { IpfsHash, PinSize, Timestamp, isDuplicate? }
+  const json = (await res.json()) as any;
+  const cid = json?.IpfsHash || json?.Hash || json?.cid;
+  if (!cid || typeof cid !== "string") {
+    throw new Error("Pinata response missing IpfsHash");
   }
   return cid;
 }

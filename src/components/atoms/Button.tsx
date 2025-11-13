@@ -8,7 +8,7 @@ const buttonStyles = cva(
     variants: {
       variant: {
         primary:
-          "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20 hover:from-cyan-400 hover:to-blue-400 hover:shadow-cyan-400/40 ring-1 ring-white/10 hover:brightness-105",
+          "bg-gradient-to-r from-indigo-500 via-cyan-400 to-sky-400 text-white shadow-lg shadow-cyan-500/25 hover:from-indigo-600 hover:via-cyan-500 hover:to-sky-500 hover:shadow-cyan-400/40 ring-1 ring-white/10 hover:brightness-105 hover:scale-105",
         ghost:
           "bg-transparent border border-white/20 text-white hover:bg-white/10 dark:text-gray-100",
         subtle:

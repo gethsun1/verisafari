@@ -105,7 +105,7 @@ Visit `http://localhost:3000`.
 
 ## 🖼️ Screenshots
 
-> Place screenshots at `public/screenshots/home.png` and `public/screenshots/upload.png`.
+> 
 
 Home
 
@@ -227,7 +227,7 @@ Notes:
 - Network: Sepolia (`chainId` 11155111).
 
   ## 🔗 Live Demo
-- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-nyq60xh4u-gethsun1s-projects.vercel.app)
+- Production: [`verisafari-nyq60xh4u-gethsun1s-projects.vercel.app`](https://verisafari-q0gpayz8r-gethsun1s-projects.vercel.app/upload)
   
     _Powered by Ethereum · Secured by IPFS · Designed with Trust._
 
