@@ -2,6 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import Image from "next/image";
 import { ToggleTheme } from "@/components/atoms/ToggleTheme";
+import { NavLinks } from "@/components/molecules/NavLinks";
 
 export function Navbar() {
   return (
@@ -12,6 +13,7 @@ export function Navbar() {
           <span>VeriSafari</span>
         </Link>
         <div className="flex items-center gap-3">
+          <NavLinks />
           <nav className="hidden items-center gap-2 md:flex">
             <a
               href="#how-it-works"
