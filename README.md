@@ -1,5 +1,7 @@
 ## 🦓 VeriSafari
 
+![Verisfari](https://i.ibb.co/rGd7f94m/Screenshot-from-2025-11-14-21-01-49.png)
+
 ![Build](https://img.shields.io/badge/Vercel-Preview-success?logo=vercel&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
