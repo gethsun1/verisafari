@@ -1,7 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import Image from "next/image";
-import { NavLinks } from "@/components/molecules/NavLinks";
 import { ToggleTheme } from "@/components/atoms/ToggleTheme";
 
 export function Navbar() {
@@ -13,7 +12,32 @@ export function Navbar() {
           <span>VeriSafari</span>
         </Link>
         <div className="flex items-center gap-3">
-          <NavLinks />
+          <nav className="hidden items-center gap-2 md:flex">
+            <a
+              href="#how-it-works"
+              className="relative rounded-xl px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <span className="relative after:absolute after:left-2 after:right-2 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-gradient-to-r from-[var(--brand-from)] to-[var(--brand-to)] after:opacity-0 hover:after:opacity-100">
+                How It Works
+              </span>
+            </a>
+            <a
+              href="#features"
+              className="relative rounded-xl px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <span className="relative after:absolute after:left-2 after:right-2 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-gradient-to-r from-[var(--brand-from)] to-[var(--brand-to)] after:opacity-0 hover:after:opacity-100">
+                Features
+              </span>
+            </a>
+            <a
+              href="#get-started"
+              className="relative rounded-xl px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              <span className="relative after:absolute after:left-2 after:right-2 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-gradient-to-r from-[var(--brand-from)] to-[var(--brand-to)] after:opacity-0 hover:after:opacity-100">
+                Get Started
+              </span>
+            </a>
+          </nav>
           <ConnectButton.Custom>
             {({ account, openAccountModal, openConnectModal, mounted }) => {
               const connected = mounted && account;
