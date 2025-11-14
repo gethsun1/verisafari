@@ -28,7 +28,7 @@ export function Hero() {
         <motion.div variants={container} initial="hidden" animate="show">
           <motion.h1
             variants={item}
-            className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-text"
+            className="text-5xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[var(--brand-from)] via-cyan-400 to-[var(--brand-to)] animate-text"
           >
             Verify Trust. Preserve Truth.
           </motion.h1>

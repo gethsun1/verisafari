@@ -9,6 +9,7 @@ import { AppLayout } from "@/components/templates/AppLayout";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { Inter } from "next/font/google";
+import Head from "next/head";
 
 const config = getDefaultConfig({
   appName: "VeriSafari",
@@ -26,6 +27,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="dark" storageKey="verisafari-theme">
           <div className={inter.className}>
+            <Head>
+              <link rel="icon" href="/versafarilogo.jpeg" />
+              <meta name="theme-color" content="#06b6d4" />
+            </Head>
             <RainbowKitProvider>
               <AppLayout>
                 <Component {...pageProps} />
